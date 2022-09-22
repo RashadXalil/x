@@ -1,6 +1,17 @@
 const express = require('express')
 const cors = require('cors')
-const path = require('path')
+const multer = require('multer')
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads/productImages')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  },
+})
+const upload = multer({
+  storage: storage,
+})
 var bodyParser = require('body-parser')
 const { config } = require('process')
 const app = express()
@@ -8,7 +19,15 @@ var prodId = 1
 var brandId = 1
 var catId = 1
 class Product {
-  constructor(name, brandId, catergoryId, desc, discountPercent, salePrice) {
+  constructor(
+    name,
+    brandId,
+    catergoryId,
+    desc,
+    discountPercent,
+    salePrice,
+    image,
+  ) {
     ;(this.id = prodId),
       (this.name = name),
       (this.brandId = brandId),
@@ -16,6 +35,7 @@ class Product {
       (this.desc = desc),
       (this.discountPercent = discountPercent),
       (this.salePrice = salePrice),
+      (this.image = image),
       (this.isDeleted = false)
     prodId++
   }
@@ -79,6 +99,21 @@ app.post('/products', (req, res) => {
     req.body.desc,
     req.body.discountPercent,
     req.body.salePrice,
+    req.body.image,
+  )
+  Products.push(prod)
+  res.send(Products)
+})
+app.post('/', upload.single('image'), (req, res) => {
+  const fileName = req.file != null ? req.file.filename : null
+  let prod = new Product(
+    req.body.name,
+    req.body.brandId,
+    req.body.catergoryId,
+    req.body.desc,
+    req.body.discountPercent,
+    req.body.salePrice,
+    fileName,
   )
   Products.push(prod)
   res.send(Products)
