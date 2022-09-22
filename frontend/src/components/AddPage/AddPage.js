@@ -1,13 +1,17 @@
 import * as React from "react";
-import { useState, UseEffect } from "react";
-import { axiosInstance } from "../../utils/axios";
-import { useFormik } from "formik";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios"
+import { axiosInstance } from "../../utils/axios.instance";
+import { useFormik,Field } from "formik";
 import * as yup from "yup";
 import TextField from "@mui/material/TextField";
 import { Select } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import "./AddPage.css";
+import { useQuery } from 'react-query'
+import { response } from "express";
 
 const validationSchema = yup.object({
   id: yup.number("Please, enter number.").required("Id is required"),
@@ -29,16 +33,14 @@ const validationSchema = yup.object({
 
 const AddPage = () => {
   const [category, setCategory] = useState([]);
-  const [brand, setBrand] = useState([]);
-  useEffect(() => {
-    axiosInstance.get().then((response) => setBrand(response.data));
-  }, [brand]);
+  const [state, setBrand] = useState({});
+  
+  // useEffect(() => {
+  //   axiosInstance.get().then((response) => setBrand(response.data));
+  //   console.log(response.data)
+  // },[])
 
-  useEffect(() => {
-    axios.get(baseURL).then((response) => {
-      setCategory(response.data);
-    });
-  }, []);
+
 
   const formik = useFormik({
     initialValues: {
@@ -135,8 +137,9 @@ const AddPage = () => {
           error={formik.touched.salesprice && Boolean(formik.errors.salesprice)}
           helperText={formik.touched.salesprice && formik.errors.salesprice}
         />
-
+{/*      
         <Select
+        
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           // value={age}
@@ -145,7 +148,18 @@ const AddPage = () => {
         >
           <MenuItem value={10}>category</MenuItem>
           <MenuItem value={20}>products</MenuItem>
-        </Select>
+        </Select> */}
+
+{/* <Field as="select" name="brandId">
+                {brand &&
+                  brand.map((item, index) => {
+                    return (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    );
+                  })}
+              </Field> */}
         <Button color="primary" variant="contained" fullWidth type="submit">
           Add
         </Button>
