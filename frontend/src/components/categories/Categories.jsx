@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { axiosInstance } from "../../utils/axios";
+import { axiosInstance } from "../../utils/axios.instance";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Table from '@mui/material/Table';
@@ -8,15 +8,16 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
+import { useQuery } from 'react-query'
 
 const Categories = () => {
 
-    const [list, setList] = useState([]);
-
-    useEffect(() =>{
-        axiosInstance.get()
-        .then(response => setList(response.data))
-    }, [list])
+    const { isLoading, error, data } = useQuery('repoData', () =>
+        axiosInstance.get('/categories')
+        .then(res => res.data)
+    ) 
+   if (isLoading) return 'Loading...' 
+   if (error) return 'An error has occurred: ' + error.message    
 
     return(
         <>
@@ -28,27 +29,17 @@ const Categories = () => {
                 <TableHead>
                     <TableRow>                        
                         <TableCell sx={{fontSize:"32px"}} align="left">ID</TableCell>
-                        <TableCell sx={{fontSize:"32px"}} align="left">Company Name</TableCell>
-                        <TableCell sx={{fontSize:"32px"}} align="left">Contact Title</TableCell>
-                        <TableCell sx={{fontSize:"32px"}} align="left">Contact Name</TableCell>
-                        <TableCell sx={{fontSize:"32px"}} align="left">Country</TableCell>
-                        <TableCell sx={{fontSize:"32px"}} align="left">Details</TableCell>
+                        <TableCell sx={{fontSize:"32px"}} align="left">Category Name</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>                    
                     {
                                     
-                        list.map(item => ( 
+                        data.map(item => ( 
                             <TableRow key={item.id}>
                                 <>
                                     <TableCell sx={{fontSize:"24px"}}>{item?.id}</TableCell>                            
-                                    <TableCell sx={{fontSize:"24px"}}>{item?.companyName}</TableCell>                            
-                                    <TableCell sx={{fontSize:"24px"}}>{item?.contactTitle}</TableCell>                            
-                                    <TableCell sx={{fontSize:"24px"}}>{item?.contactName}</TableCell>                            
-                                    <TableCell sx={{fontSize:"24px"}}>{item.address?.country}</TableCell>
-                                    <TableCell>
-                                    <Button key={item} href={`Suppliers/${item.id}`} value={item.id} variant="text" sx={{fontSize:"24px", color: '#1976d2' }}>Details</Button>
-                                    </TableCell>                
+                                    <TableCell sx={{fontSize:"24px"}}>{item?.name}</TableCell>                                       
                                 </>                        
                             </TableRow>))                        
                     }
