@@ -91,20 +91,7 @@ app.get('/products/:id', (req, res) => {
   res.send(target)
 })
 // Products add
-app.post('/products', (req, res) => {
-  let prod = new Product(
-    req.body.name,
-    req.body.brandId,
-    req.body.catergoryId,
-    req.body.desc,
-    req.body.discountPercent,
-    req.body.salePrice,
-    req.body.image,
-  )
-  Products.push(prod)
-  res.send(Products)
-})
-app.post('/', upload.single('image'), (req, res) => {
+app.post('/products', upload.single('image'), (req, res) => {
   const fileName = req.file != null ? req.file.filename : null
   let prod = new Product(
     req.body.name,
