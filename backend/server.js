@@ -41,6 +41,7 @@ class Brand {
 }
 let Brands = [
   {
+    id: 1,
     name: 'Apple',
   },
 ]
@@ -51,15 +52,7 @@ class Category {
     catId++
   }
 }
-let Categories = [
-  {
-    name: 'Tablet',
-  },
-  {
-    name: 'SmartPhone',
-  },
-  { name: 'Laptop' },
-]
+let Categories = []
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -169,15 +162,15 @@ app.get('/categories', (req, res) => {
   res.send(Categories)
 })
 //get by id
-app.get('/brands/:id', (req, res) => {
+app.get('/categories/:id', (req, res) => {
   let id = req.params.id
   let target = Categories.find((x) => x.id == id)
   res.send(target)
 })
 //add category
 app.post('/categories', (req, res) => {
-  let category = new category(req.body.name)
-  category.push(category)
+  let category = new Category(req.body.name)
+  Categories.push(category)
   res.send(Categories)
 })
 //category delete
